@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validador de CPF</title>
+</head>
+<body>
+  <h2>Validador de CPF</h2>
+  <label for="cpf">Digite o CPF:</label>
+  <input type="text" id="cpf" placeholder="000.000.000-00">
+  <button onclick="validarCPFInput()">Validar CPF</button>
+  <p id="resultado"></p>
+
+  <script>
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g, '');
+
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+        return false;
+      }
+
+      function calcularDigito(cpf, peso) {
+        let soma = 0;
+        for (let i = 0; i < peso - 1; i++) {
+          soma += parseInt(cpf.charAt(i)) * (peso - i);
+        }
+        let resto = (soma * 10) % 11;
+        return resto === 10 ? 0 : resto;
+      }
+
+      const digito1 = calcularDigito(cpf, 10);
+      if (digito1 !== parseInt(cpf.charAt(9))) {
+        return false;
+      }
+
+      const digito2 = calcularDigito(cpf, 11);
+      if (digito2 !== parseInt(cpf.charAt(10))) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function validarCPFInput() {
+      const cpf = document.getElementById('cpf').value;
+      const resultado = document.getElementById('resultado');
+
+      if (validarCPF(cpf)) {
+        resultado.textContent = 'CPF válido!';
+        resultado.style.color = 'green';
+      } else {
+        resultado.textContent = 'CPF inválido!';
+        resultado.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>
